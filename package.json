@@ -1,0 +1,18 @@
+{
+  "dependencies": {
+    "clickhouse": "^2.1.5",
+    "colors": "^1.4.0",
+    "connect": "^3.7.0",
+    "http-proxy": "^1.18.1",
+    "nanoid": "^3.1.12"
+  },
+  "devDependencies": {
+    "expect.js": "^0.3.1",
+    "mocha": "^8.2.0"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "start-dev": "nodemon src/server.js",
+    "test": "mocha  "
+  }
+}

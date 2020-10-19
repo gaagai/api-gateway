@@ -1,0 +1,20 @@
+version: '3.4'
+
+services:
+  app:
+    image: api-gateway1
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      NODE_ENV: production 
+    command: /bin/sh -c "while sleep 1000; do :; done"
+    volumes:
+      - ..:/workspace  
+  clickhouse:
+    image: yandex/clickhouse-server
+    container_name: clickhouse1
+    hostname: clickhouse1
+    #build: .
+    ports:
+      - 8123:8123
