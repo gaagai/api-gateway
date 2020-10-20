@@ -11,12 +11,12 @@ services:
       NODE_ENV: production 
     command: /bin/sh -c "while sleep 1000; do :; done"
     volumes:
-      - ..:/workspace
+      - ..:/workspace:delegated
     ports:
-      - 8000:8000  
+      - 8000:8000    
   clickhouse:
     image: yandex/clickhouse-server
-    container_name: clickhouse1
+    #container_name: clickhouse1
     hostname: clickhouse1
     #build: .
     ports:

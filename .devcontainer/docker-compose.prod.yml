@@ -1,0 +1,36 @@
+version: '3.4'
+# prod configuration launches separate container for gateway and dashboard
+services:
+  gateway:
+    image: api-gateway1
+    hostname: api-gateway1
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      NODE_ENV: production 
+    command: node src/server.js # @TODO: test dash correct launch
+    volumes:
+      - ../gateway:/workspace-gateway
+    ports:
+      - 8000:8000  
+  dashboard:
+    image: api-dashboard1
+    hostname: api-dashboard1
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      NODE_ENV: production 
+    command: node serve.js # @TODO: test dash correct launch
+    volumes:
+      - ../dashboard:/workspace-dashboard
+    ports:
+      - 8000:8000      
+  clickhouse:
+    image: yandex/clickhouse-server
+    container_name: clickhouse1
+    hostname: clickhouse1
+    #build: .
+    ports:
+      - 8123:8123
