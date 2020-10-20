@@ -1,0 +1,12 @@
+### Use magestic REST Client for VS Code for this file!
+
+### test 404 for non-existing api server
+GET http://127.0.0.1:8000/ggg
+
+### first stub api server
+GET http://127.0.0.1:8000/ggg
+host: api-1-host
+
+### second stub api server
+GET http://127.0.0.1:8000/ggg
+host: api-2-host
