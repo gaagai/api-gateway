@@ -3,7 +3,6 @@ const http = require('http'),
     connect = require('connect'),
     app = connect(),
     httpProxy = require('http-proxy'),
-    bodyParser = require('body-parser'),
     vhost = require('vhost');
 
 const { ClickHouseLogger } = require('./clickhouse.js')
