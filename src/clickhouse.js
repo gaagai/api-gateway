@@ -92,27 +92,30 @@ class ClickHouseLogger {
         }
     }
 
+    debug(...args) {
+        if (this.opts.debug) {
+            console.log(args)
+        }
+    }
+
     addEntry(entry) {
         this.newEntries.push(new LogEntry(entry))
         if (typeof this.flushTimer !== 'undefined') {
             clearTimeout(this.flushTimer)
         }
         this.flushTimer = setTimeout(this.flush.bind(this), 10000)
-        console.log('append to log:', entry)
+        
+        this.debug('append to log:', entry)
     }
 
     async flush() {
-        
-        /*let values = this.newEntries.map((i) => {
-            return i.id + ',' + i.start_time + ',' + i.duration + ',' + i.url + ',' + i.host + ',' + i.response_body
-        })*/
 
         if (!this.newEntries.length) {
-            console.log('no flush, queue empty!')
+            this.debug('no flush, queue empty!')
             return
         }
 
-        //console.log('flushing...', this.newEntries)
+        this.debug('flushing...', this.newEntries)
         //try {
             await this.client.insert('INSERT INTO logs (id, started_at, duration, url, target_host, connecting_ip, connecting_country, response_headers, response_body, response_status, response_status_message)', this.newEntries).toPromise()
             //await this.client.query('optimize table logs').toPromise()
