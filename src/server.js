@@ -2,14 +2,20 @@ const http = require('http'),
     colors = require('colors'),
     connect = require('connect'),
     app = connect(),
-    httpProxy = require('http-proxy');
+    httpProxy = require('http-proxy'),
+    bodyParser = require('body-parser'),
+    vhost = require('vhost');
 
 const { ClickHouseLogger } = require('./clickhouse.js')
+const { Apis, Users, UsersApisAccess } = require('./config.js')
+
+
 const { nanoid } = require('nanoid')
 
-const logger = new ClickHouseLogger({url: 'http://clickhouse1', port: 8123, debug: true, database: 'prod'});
+const logger = new ClickHouseLogger({url: 'http://clickhouse1', port: 8123, debug: false, database: 'prod'});
 
-const BODY_MAX_LENGTH = 1000;
+const REQUEST_BODY_MAX_LENGTH = 1000;
+const RESPONSE_BODY_MAX_LENGTH = 1000;
 
 
 (async () => {
@@ -36,7 +42,8 @@ proxy.on('proxyRes', function (proxyRes, req, res) {
     });
     proxyRes.on('end', function () {
         body = Buffer.concat(body).toString();
-        let connectingIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+        //console.log('connection:', req.connection);
+        let connectingIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress || '';
 
         logger.addEntry({
             id: req.apg.id,
@@ -45,7 +52,7 @@ proxy.on('proxyRes', function (proxyRes, req, res) {
             duration: req.apg.perfDuration,
             response_status: proxyRes.statusCode,
             response_status_message: proxyRes.statusMessage,
-            response_body: body.substr(0, BODY_MAX_LENGTH),
+            response_body: body.substr(0, RESPONSE_BODY_MAX_LENGTH),
             response_headers: proxyRes.headers,
             connecting_ip: connectingIp,
             target_host: req.apg.targetHost
@@ -55,6 +62,21 @@ proxy.on('proxyRes', function (proxyRes, req, res) {
 
 });
 
+app.use(function(req, res, next) {
+    var data = '';
+    req.setEncoding('utf8');
+    req.on('data', function(chunk) {
+        data += chunk;
+        if (data.length > REQUEST_BODY_MAX_LENGTH) {
+            req.bodyTrimmed = data;
+            next();
+        }
+    });
+    req.on('end', function() {
+        req.bodyTrimmed = data;
+        next();
+    });
+});
 
 
 
@@ -64,11 +86,32 @@ app.use(function (req, res) {
     req.apg.id = nanoid()
     req.apg.perfStart = Date.now()
 
-    let targetHost = 'https://pixeljets.com/'
+    let host = req.headers.host
+    
+    let apiDefinition = Apis.find((d) => d.hostname == host)
+    console.log('HOST:', host)
+    console.log('API DEF:', apiDefinition)
+    if (!apiDefinition) {
+        res.writeHead(502, 'No corresponding host found')
+        res.end('No corresponding host found')
+    }
 
-    req.apg.targetHost = targetHost
+    if (apiDefinition.useStubServer) {
+        var target = 'http://127.0.0.1:8555'
+        var headers = { Host: apiDefinition.hostname }
+        
+    } else {
+        var target = 'http://' + apiDefinition.hostname
+        var headers = {} 
+    }
+
+    console.log('TARGET:', target);
+    console.log('TARGET HEADERS:', headers)
+    
+    req.apg.apiName = apiDefinition.name
+    req.apg.targetHost = target
     //req.apg.artificalDelay = Math.random() * 100
-    proxy.web(req, res, { target: targetHost })
+    proxy.web(req, res, { target, headers })
 
     /*setTimeout(() => {
         proxy.web(req, res, { target: 'http://localhost:9000' })
@@ -86,6 +129,29 @@ http.createServer(function (req, res) {
   res.write('request successfully proxied! Ruby' + '\n' + JSON.stringify(req.headers, true, 2));
   res.end();
 }).listen(9000);
+
+
+// Launch test target servers from definitions
+let apiStubServer = connect()
+
+Apis.forEach((definition) => {
+    let definitionApp = connect()
+    
+    definitionApp.use(definition.stubServerConfig.handler)
+    console.log('api definition '.blue + definition.hostname.green.bold + ' found '.blue);
+    apiStubServer.use(vhost(definition.hostname, definitionApp))
+
+})
+
+apiStubServer.use(function(req, res) {
+    console.log('INSIDE STUB MASTER SERVER!');
+    console.log(req.headers)
+    res.writeHead(200)
+    res.end('INSIDE STUB MASTER SERVER!');
+})
+
+apiStubServer.listen(8555)
+console.log('stub api server with '.blue + (Apis.length).toString().blue.bold + ' definitions '.blue + 'started '.green.bold + 'on port '.blue + '8555 '.yellow);
 
 
 /*[`exit`, `SIGINT`].forEach((eventType) => {

@@ -4,7 +4,8 @@
     "colors": "^1.4.0",
     "connect": "^3.7.0",
     "http-proxy": "^1.18.1",
-    "nanoid": "^3.1.12"
+    "nanoid": "^3.1.12",
+    "vhost": "^3.0.2"
   },
   "devDependencies": {
     "expect.js": "^0.3.1",
