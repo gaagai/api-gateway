@@ -3,6 +3,7 @@ const Apis = [
         id: 1,
         name: 'api-1',
         hostname: 'api-1-host',
+        openapiFile: 'api/petstore.yml',
         //targetHost: '127.0.0.1',
         //targetPort: 8793,
         useStubServer: true,
