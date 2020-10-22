@@ -1,3 +1,9 @@
+### bad auth not json
+POST http://127.0.0.1:8080/auth
+Content-Type: application/json
+
+fwefew
+
 ### bad auth
 POST http://127.0.0.1:8080/auth
 Content-Type: application/json
@@ -14,4 +20,9 @@ Content-Type: application/json
 
 ### dash
 GET http://127.0.0.1:8080/dash
+Content-Type: application/json
+
+
+### logout
+POST http://127.0.0.1:8080/logout
 Content-Type: application/json
