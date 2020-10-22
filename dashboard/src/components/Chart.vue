@@ -11,11 +11,15 @@
     </ol>
     <input class="form-input" type="text" v-model="num" />
     <button class="form-input" @click="randomize">Randomize!</button>
+
+    <button class="form-input" @click="getUsers">Get users!</button>
 </template>
 <script lang="ts">
     import { defineComponent, ref, watchEffect, watch, getCurrentInstance, onMounted } from "vue";
     //import Chart2 from './Chart2.vue';
     import Chart from 'chart.js';
+
+    import { axios } from '@bundled-es-modules/axios';
 
     export default defineComponent({
         //components: { Chart2 },
@@ -25,7 +29,7 @@
         },
         
         setup(props, context) {
-            
+
             const num = ref(5)
             let { chart, updateChart } = useChart(9)
             const randomize = () => {
@@ -39,10 +43,21 @@
                 //initChart()
             })
 
+            const users = ref([])
+
+            const getUsers = async () => {
+                try {
+                    console.log('GET USERS!')
+                    const { response } = await axios.get('http://127.0.0.1:8080/dash');
+                    users = response.data
+                } catch (error) {
+                    console.log(Object.keys(error));
+                }
+            }; 
             
             //watchEffect(() => { console.log('watcher', chart); updateChart(chart) } )
 
-            return { num, randomize }
+            return { num, randomize, getUsers }
         }
     })
 

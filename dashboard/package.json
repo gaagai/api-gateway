@@ -6,6 +6,7 @@
     "build": "cross-env NODE_ENV=production vite build"
   },
   "dependencies": {
+    "@bundled-es-modules/axios": "^0.18.1",
     "chart.js": "^2.9.4",
     "tailwindcss": "^1.9.1",
     "vue": "next",
