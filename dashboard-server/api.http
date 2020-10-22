@@ -1,0 +1,17 @@
+### bad auth
+POST http://127.0.0.1:8080/auth
+Content-Type: application/json
+
+{ "username": "fweef","password":"chopa" }
+
+
+### success auth
+POST http://127.0.0.1:8080/auth
+Content-Type: application/json
+
+{ "username": "admin","password":"admin" }
+
+
+### dash
+GET http://127.0.0.1:8080/dash
+Content-Type: application/json
