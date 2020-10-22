@@ -9,8 +9,8 @@
             {{ d.val }}
         </li>
     </ol>
-    <input class="form-input" type="text" v-model="chop" />
-    <button class="form-input" @click="updateChart">Randomize!</button>
+    <input class="form-input" type="text" v-model="num" />
+    <button class="form-input" @click="randomize">Randomize!</button>
 </template>
 <script lang="ts">
     import { defineComponent, ref, watchEffect, watch, getCurrentInstance, onMounted } from "vue";
@@ -26,23 +26,29 @@
         
         setup(props, context) {
             
-            const { chart, chop, initChart, updateChart } = useChart()
-
+            const num = ref(5)
+            let { chart, updateChart } = useChart(9)
+            const randomize = () => {
+                //let g = Math.random() * 100
+                console.log('NUM:', num)
+                updateChart(num.value)
+            }
+            console.log('NUM after init:', num.value)
             onMounted(() => {
                 console.log('mounted composition api!')
                 //initChart()
             })
 
-            console.log('chop:', chop)
             
             //watchEffect(() => { console.log('watcher', chart); updateChart(chart) } )
 
-            return { chart, chop, updateChart }
+            return { num, randomize }
         }
     })
 
 
-    function useChart() {
+    function useChart(o, a) {
+        console.log('first:', o, 'second:', a)
         let chart = ref(null)
         const chop = ref(5)
         console.log('chop right after init:', chop)
@@ -68,9 +74,9 @@
             });
         }
 
-        const updateChart = (chart, chop) => {
+        const updateChart = (num) => {
             console.log('update chart!', chart)
-            chart.data.datasets[0].data = [3,chop,2,5,5,Math.random()*10,10,17,Math.random()*30]
+            chart.data.datasets[0].data = [3,num,2,5,5,Math.random()*10,10,17,Math.random()*30]
             chart.update()
         }
 
@@ -80,10 +86,11 @@
         })
 
         watch(chop, (c, prevC) => {
-            updateChart(chart, c)
+            console.log('WATCH!')
+            //updateChart(chart, c)
         })
 
-        return { chart, chop, initChart, updateChart }
+        return { chart, initChart, updateChart }
     }
 
 </script>
