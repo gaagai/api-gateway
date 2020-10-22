@@ -9,7 +9,7 @@
     "chart.js": "^2.9.4",
     "tailwindcss": "^1.9.1",
     "vue": "next",
-    "vue-router": "^4.0.0-beta.11"
+    "vue-router": "^4.0.0-beta.13"
   },
   "devDependencies": {
     "@tailwindcss/custom-forms": "^0.2.1",
