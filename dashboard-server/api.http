@@ -27,6 +27,14 @@ Content-Type: application/json
 GET http://127.0.0.1:8080/dash
 Content-Type: application/json
 
+### stats
+GET http://127.0.0.1:8080/stats
+Content-Type: application/json
+
+### stats items
+GET http://127.0.0.1:8080/stats-items
+Content-Type: application/json
+
 
 ### logout
 POST http://127.0.0.1:8080/logout

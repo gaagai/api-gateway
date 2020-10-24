@@ -25,11 +25,16 @@ app.use(bodyParser.json({type: "*/*"}));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(jsonErrorHandler)
 
-require("./app/passport-setup")(app);
+require("./passport-setup")(app);
 
 
+const { initDb } = require('./services/clickhouse');
 
-const db = require("./app/models");
+// init clickhouse
+let cdb1 = initDb(require("./config/db.config").CLICKHOUSE);
+
+// init mysql
+const db = require("./models");
 
 //db.sequelize.sync();
 // // drop the table if it already exists
@@ -39,7 +44,7 @@ const db = require("./app/models");
 
 // simple route
 
-require("./app/routes/routes")(app);
+require("./routes/routes")(app);
 
 
 // set port, listen for requests

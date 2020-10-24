@@ -1,15 +1,20 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const expressSession = require('express-session')({
-    secret: 'secret',
-    resave: false,
-    saveUninitialized: false
-});
+
+const session = require('express-session')
+const FileStore = require('session-file-store')(session);
+
+const fileStoreOptions = {};
 
 module.exports = app => {
 
     
-    app.use(expressSession);
+    app.use(session({
+        store: new FileStore(fileStoreOptions),
+        secret: 'secfeweg3ret',
+        resave: false,
+        saveUninitialized: false
+    }));
 
     app.use(passport.initialize());
     app.use(passport.session());

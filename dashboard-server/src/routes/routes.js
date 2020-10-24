@@ -2,7 +2,8 @@ const auth = require('../middleware/auth');
 const passport = require('passport');
 
 module.exports = app => {
-  const tutorials = require("../controllers/tutorial.controller.js");
+  //const tutorials = require("../controllers/tutorial.controller.js");
+  const stats = require("../controllers/stats.controller.js");
 
   var router = require("express").Router();
   
@@ -39,7 +40,10 @@ module.exports = app => {
     } });
   });
 
+  router.get("/stats", auth, stats.stats);
+  router.get("/stats-items", auth, stats.statsItems);
 
+/*
 
   let routerTutorials = require("express").Router();
 
@@ -64,7 +68,7 @@ module.exports = app => {
   // Delete all Tutorials
   routerTutorials.delete("/", tutorials.deleteAll);
 
-  app.use('/api/tutorials', routerTutorials);
+  app.use('/api/tutorials', routerTutorials); */
   app.use('/', router);
 
   app.use(function(req, res, next){

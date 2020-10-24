@@ -4,11 +4,14 @@
   "description": "Node.js Dash REST API",
   "main": "server.js",
   "scripts": {
+    "start": "node src/server.js",
+    "dev": "CLICKHOUSE_URL=http://api-gateway_devcontainer_clickhouse_1 CLICKHOUSE_DATABASE=prod nodemon  --watch src src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
     "nodejs",
     "express",
+    "clickhouse",
     "rest",
     "api",
     "sequelize",
@@ -18,6 +21,7 @@
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "clickhouse": "^2.1.5",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
@@ -25,6 +29,7 @@
     "mysql2": "^2.0.2",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
-    "sequelize": "^5.21.2"
+    "sequelize": "^5.21.2",
+    "session-file-store": "^1.5.0"
   }
 }

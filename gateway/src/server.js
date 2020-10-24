@@ -3,7 +3,8 @@ const http = require('http'),
     connect = require('connect'),
     app = connect(),
     httpProxy = require('http-proxy'),
-    vhost = require('vhost');
+    vhost = require('vhost'),
+    assert = require('assert').strict;
 
 const { ClickHouseLogger } = require('./clickhouse.js')
 const { Apis, Users, UsersApisAccess } = require('./config.js')
@@ -11,7 +12,10 @@ const { Apis, Users, UsersApisAccess } = require('./config.js')
 
 const { nanoid } = require('nanoid')
 
-const logger = new ClickHouseLogger({url: 'http://clickhouse1', port: 8123, debug: false, database: 'prod'});
+assert.ok(process.env.CLICKHOUSE_URL, 'CLICKHOUSE_URL env var required!')
+assert.ok(process.env.CLICKHOUSE_DATABASE, 'CLICKHOUSE_DATABASE env var required!')
+
+const logger = new ClickHouseLogger({url: process.env.CLICKHOUSE_URL, port: process.env.CLICKHOUSE_PORT || 8123, debug: process.env.CLICKHOUSE_DEBUG || false, database: process.env.CLICKHOUSE_DATABASE});
 
 const REQUEST_BODY_MAX_LENGTH = 1000;
 const RESPONSE_BODY_MAX_LENGTH = 1000;
