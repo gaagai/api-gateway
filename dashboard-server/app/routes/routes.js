@@ -18,7 +18,7 @@ module.exports = app => {
   router.post('/auth', function(req, res, next) {
     passport.authenticate('local', function(err, user, info) {
       if (err) { return next(err); }
-      if (!user) { return res.status(403).json({'error': 'Auth fail!'}); }
+      if (!user) { return res.status(403).json({'error': 'Authenticaiton failed. Please check if your credentials are valid.'}); }
       req.logIn(user, function(err) {
         if (err) { return next(err); }
         return res.status(200).json({'success': true, user});
@@ -34,7 +34,9 @@ module.exports = app => {
   router.get("/dash", 
     auth,
     (req, res) => {
-    res.json({ message: "Dashboard here." });
+    res.json({ message: "Dashboard here.", data: { 
+      graph: [1,2,3]
+    } });
   });
 
 

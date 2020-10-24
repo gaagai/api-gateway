@@ -84,6 +84,9 @@
           v-show="dropdownOpen"
           class="absolute right-0 mt-2 py-2 w-48 bg-white rounded-md shadow-xl z-20"
         >
+          <div class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white">
+            {{ userState.name }}
+          </div>
           <a
             href="#"
             class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white"
@@ -94,11 +97,12 @@
             class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white"
             >Products</a
           >
-          <router-link
-            to="/"
+          <a v-if="userState.loggedIn"
+            href="#" @click="logout()"
             class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white"
-            >Log out</router-link
+            >Log out</a
           >
+          <router-link class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white" to="/" v-else>Login</router-link>
         </div>
       </div>
     </div>
@@ -106,17 +110,40 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, onBeforeMount } from "vue";
 import { useSidebar } from "../hooks/useSidebar";
+import apiClient from '../services/apiClient';
+import { useToast } from "vue-toastification";
+import { useRouter } from "vue-router";
+import { userStore } from "../store/user-store";
 
 export default defineComponent({
+
   setup(_, { emit }) {
     const dropdownOpen = ref(false);
+    const toast = useToast();
+    const router = useRouter();
     const { isOpen } = useSidebar();
+    onBeforeMount(async () => await userStore.init())
+    
+
+    const logout = () => {
+      apiClient.post('/logout', {}, {withCredentials: true}).then(() => {
+        userStore.setLoggedOut();
+        
+        toast.success("Logged out successfully!");
+        router.push('/');
+      }).catch((err) => {
+        toast.error("Error:" + err.message);
+      });
+      
+    }
 
     return {
       isOpen,
       dropdownOpen,
+      logout,
+      userState: userStore.getState()
     };
   },
 });

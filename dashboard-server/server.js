@@ -10,10 +10,13 @@ const jsonErrorHandler = async (err, req, res, next) => {
 const app = express();
 app.disable('x-powered-by');
 var corsOptions = {
-  origin: "http://localhost:8081"
+  //origin: "*"
+  origin: true,
+  credentials: true
 };
 
 app.use(cors(corsOptions));
+//app.options('*', cors());
 
 // parse requests of content-type - application/json
 app.use(bodyParser.json({type: "*/*"}));

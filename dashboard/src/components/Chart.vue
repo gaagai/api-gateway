@@ -1,4 +1,5 @@
 <template>chart!3
+    <click></click>
     <canvas id="myChart"></canvas>
     Prop from parent: {{ aga.num }}
     
@@ -18,11 +19,11 @@
     import { defineComponent, ref, watchEffect, watch, getCurrentInstance, onMounted } from "vue";
     //import Chart2 from './Chart2.vue';
     import Chart from 'chart.js';
-
+    import Click from './Click.vue'
     import { axios } from '@bundled-es-modules/axios';
 
     export default defineComponent({
-        //components: { Chart2 },
+        components: { Click },
         props: {
             aga: Object,
             data: Array
