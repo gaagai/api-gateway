@@ -128,13 +128,13 @@ export default defineComponent({
     
 
     const logout = () => {
-      apiClient.post('/logout', {}, {withCredentials: true}).then(() => {
-        userStore.setLoggedOut();
-        
+      apiClient.post('/logout').then(() => {
         toast.success("Logged out successfully!");
-        router.push('/');
       }).catch((err) => {
-        toast.error("Error:" + err.message);
+        toast.error("Error: " + err.message);
+      }).finally(() => {
+        userStore.setLoggedOut();
+        router.push('/');
       });
       
     }

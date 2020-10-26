@@ -9,8 +9,9 @@ export function useSidebar() {
 */
 
 const instance = axios.create({
-    baseURL: 'http://127.0.0.1:58596/',
+    baseURL: 'https://127.0.0.1:8080/',
     timeout: 1000,
+    withCredentials: true
     //headers: {'X-Custom-Header': 'foobar'}
 });
 

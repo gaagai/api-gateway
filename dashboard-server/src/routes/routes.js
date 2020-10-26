@@ -29,7 +29,14 @@ module.exports = app => {
 
   router.post('/logout', auth, function(req, res){
     req.logout();
-    res.status(200).json({success: true});
+    res.clearCookie('connect.sid', {
+      path: '/'
+    });
+
+    req.session.destroy(function (err) {
+      res.status(200).json({success: true});
+    });
+    
   });
   
   router.get("/dash", 

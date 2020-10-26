@@ -1,12 +1,13 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const fs = require('fs');
 const cors = require("cors");
 
 const jsonErrorHandler = async (err, req, res, next) => {
   res.status(500).send({ error: err });
 }
 
-
+const https = require('https')
 const app = express();
 app.disable('x-powered-by');
 var corsOptions = {
@@ -49,6 +50,13 @@ require("./routes/routes")(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
-});
+/*app.listen(PORT, () => {
+  console.log();
+});*/
+
+https.createServer({
+    key: fs.readFileSync('server.key'),
+    cert: fs.readFileSync('server.cert')
+  }, app).listen(PORT, () => {
+  console.log(`Https server is running on port ${PORT}.`)
+})

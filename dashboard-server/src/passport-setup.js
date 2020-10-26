@@ -13,7 +13,12 @@ module.exports = app => {
         store: new FileStore(fileStoreOptions),
         secret: 'secfeweg3ret',
         resave: false,
-        saveUninitialized: false
+        saveUninitialized: false,
+        cookie : {
+            //secure: true,
+            maxAge: 1000*60*60*24*7,
+            sameSite: 'None'
+        }
     }));
 
     app.use(passport.initialize());

@@ -1,41 +1,206 @@
 ### bad auth not json
-POST http://127.0.0.1:8080/auth
+POST https://127.0.0.1:8080/auth
 Content-Type: application/json
 
 fwefew
 
+### response:
+HTTP/1.1 500 Internal Server Error
+Vary: Origin
+Access-Control-Allow-Credentials: true
+Content-Type: application/json; charset=utf-8
+Content-Length: 100
+ETag: W/"64-jvIQF/K+wiMjTFyDYL+EFslZzKM"
+Date: Mon, 26 Oct 2020 12:41:37 GMT
+Connection: close
+
+{
+  "error": {
+    "expose": true,
+    "statusCode": 400,
+    "status": 400,
+    "body": "fwefew",
+    "type": "entity.parse.failed"
+  }
+}
+
+
+
+
 ### bad auth
-POST http://127.0.0.1:8080/auth
+POST https://127.0.0.1:8080/auth
 Content-Type: application/json
 
 { "username": "fweef","password":"chopa" }
+
+### response:
+HTTP/1.1 403 Forbidden
+Vary: Origin
+Access-Control-Allow-Credentials: true
+Content-Type: application/json; charset=utf-8
+Content-Length: 78
+ETag: W/"4e-eD6/053Ckf9UfXpoEwo4s/+Uorw"
+Date: Mon, 26 Oct 2020 12:41:04 GMT
+Connection: close
+
+{
+  "error": "Authenticaiton failed. Please check if your credentials are valid."
+}
+
+
+
 
 ### OPTIONS
-OPTIONS http://127.0.0.1:8080/auth
+OPTIONS https://127.0.0.1:8080/auth
 Content-Type: application/json
 
 { "username": "fweef","password":"chopa" }
 
+### response
+HTTP/1.1 204 No Content
+Vary: Origin, Access-Control-Request-Headers
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Methods: GET,HEAD,PUT,PATCH,POST,DELETE
+Content-Length: 0
+Date: Mon, 26 Oct 2020 12:40:55 GMT
+Connection: close
+
+
+
+
+
+
 ### success auth
-POST http://127.0.0.1:8080/auth
+POST https://127.0.0.1:8080/auth
 Content-Type: application/json
 
 { "username": "admin","password":"admin" }
 
+### response
+
+HTTP/1.1 200 OK
+Vary: Origin
+Access-Control-Allow-Credentials: true
+Content-Type: application/json; charset=utf-8
+Content-Length: 47
+ETag: W/"2f-PVR+fy9EL4ahKjTBS1HWaTWhXkc"
+Date: Mon, 26 Oct 2020 12:40:35 GMT
+Connection: close
+
+{
+  "success": true,
+  "user": {
+    "name": "admin",
+    "id": 1
+  }
+}
+
+
+
+
+
+
+
+
 
 ### dash
-GET http://127.0.0.1:8080/dash
+GET https://127.0.0.1:8080/dash
 Content-Type: application/json
+
+### response
+HTTP/1.1 200 OK
+Vary: Origin
+Access-Control-Allow-Credentials: true
+Content-Type: application/json; charset=utf-8
+Content-Length: 54
+ETag: W/"36-SLL3xa48DqCXqSlhNdHHflCWayo"
+Date: Mon, 26 Oct 2020 12:40:24 GMT
+Connection: close
+
+{
+  "message": "Dashboard here.",
+  "data": {
+    "graph": [
+      1,
+      2,
+      3
+    ]
+  }
+}
+
+
+
+
+
+
+
 
 ### stats
-GET http://127.0.0.1:8080/stats
+GET https://127.0.0.1:8080/stats
 Content-Type: application/json
 
+### response
+HTTP/1.1 200 OK
+Vary: Origin
+Access-Control-Allow-Credentials: true
+Content-Type: application/json; charset=utf-8
+Content-Length: 42
+ETag: W/"2a-I/WGacTHdoMHZbQsD9MBED1ShvQ"
+Date: Mon, 26 Oct 2020 12:45:35 GMT
+Connection: close
+
+{
+  "data": {
+    "num": 4,
+    "failed": 0,
+    "failRate": 0
+  }
+}
+
+
+
+
+
+
+
+
 ### stats items
-GET http://127.0.0.1:8080/stats-items
+GET https://127.0.0.1:8080/stats-items
 Content-Type: application/json
+
+### response:
+HTTP/1.1 200 OK
+Vary: Origin
+Access-Control-Allow-Credentials: true
+Content-Type: application/json; charset=utf-8
+Content-Length: 1641
+ETag: W/"669-7afF6Gsv9tKZHb6skjDDd9E4eG8"
+Date: Mon, 26 Oct 2020 12:39:44 GMT
+Connection: close
+
+{
+  "data": [
+    {
+      "id": "J2ufc8FGvjD-JRLK_r0LJ",
+      "started_at": "2018-01-24 00:01:58",
+      "duration": 18,
+      "url": "/ggg",
+      "target_host": "http://127.0.0.1:8555",
+      "connecting_ip": "::ffff:127.0.0.1",
+      "connecting_country": "",
+      "response_headers": "{\"date\":\"Sat, 24 Oct 2020 11:39:13 GMT\",\"connection\":\"close\",\"transfer-encoding\":\"chunked\"}",
+      "response_body": "Hello from first api!",
+      "response_status": 200,
+      "response_status_message": "OK"
+    }
+  ]
+}
+
+
+
+
 
 
 ### logout
-POST http://127.0.0.1:8080/logout
+POST https://127.0.0.1:8080/logout
 Content-Type: application/json

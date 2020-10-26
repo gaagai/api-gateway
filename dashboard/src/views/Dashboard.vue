@@ -43,8 +43,8 @@
             </div>
 
             <div class="mx-5">
-              <h4 class="text-2xl font-semibold text-gray-700">8,282</h4>
-              <div class="text-gray-500">New Users</div>
+              <h4 class="text-2xl font-semibold text-gray-700">{{ logNum }}</h4>
+              <div class="text-gray-500">Total Requests</div>
             </div>
           </div>
         </div>
@@ -76,8 +76,8 @@
             </div>
 
             <div class="mx-5">
-              <h4 class="text-2xl font-semibold text-gray-700">200,521</h4>
-              <div class="text-gray-500">Total Orders</div>
+              <h4 class="text-2xl font-semibold text-gray-700">{{logNumFailed}}</h4>
+              <div class="text-gray-500">Total Failed</div>
             </div>
           </div>
         </div>
@@ -109,8 +109,8 @@
             </div>
 
             <div class="mx-5">
-              <h4 class="text-2xl font-semibold text-gray-700">215,542</h4>
-              <div class="text-gray-500">Available Products</div>
+              <h4 class="text-2xl font-semibold text-gray-700">{{ logFailRate }}</h4>
+              <div class="text-gray-500">Fail Rate</div>
             </div>
           </div>
         </div>
@@ -119,100 +119,14 @@
 
     <div class="mt-8"></div>
 
+    
+
     <div class="flex flex-col mt-8">
       <div class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
         <div
           class="align-middle inline-block min-w-full shadow overflow-hidden sm:rounded-lg border-b border-gray-200"
         >
-          <table class="min-w-full">
-            <thead>
-              <tr>
-                <th
-                  class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Name
-                </th>
-                <th
-                  class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Title
-                </th>
-                <th
-                  class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Status
-                </th>
-                <th
-                  class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Role
-                </th>
-                <th class="px-6 py-3 border-b border-gray-200 bg-gray-50"></th>
-              </tr>
-            </thead>
-
-            <tbody class="bg-white">
-              <tr v-for="(u, index) in users" :key="index">
-                <td
-                  class="px-6 py-4 whitespace-no-wrap border-b border-gray-200"
-                >
-                  <div class="flex items-center">
-                    <div class="flex-shrink-0 h-10 w-10">
-                      <img
-                        class="h-10 w-10 rounded-full"
-                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                        alt=""
-                      />
-                    </div>
-
-                    <div class="ml-4">
-                      <div class="text-sm leading-5 font-medium text-gray-900">
-                        {{ u.name }}
-                      </div>
-                      <div class="text-sm leading-5 text-gray-500">
-                        {{ u.email }}
-                      </div>
-                    </div>
-                  </div>
-                </td>
-
-                <td
-                  class="px-6 py-4 whitespace-no-wrap border-b border-gray-200"
-                >
-                  <div class="text-sm leading-5 text-gray-900">
-                    {{ u.title }}
-                  </div>
-                  <div class="text-sm leading-5 text-gray-500">
-                    {{ u.title2 }}
-                  </div>
-                </td>
-
-                <td
-                  class="px-6 py-4 whitespace-no-wrap border-b border-gray-200"
-                >
-                  <span
-                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800"
-                    >{{ u.status }}</span
-                  >
-                </td>
-
-                <td
-                  class="px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm leading-5 text-gray-500"
-                >
-                  {{ u.role }}
-                </td>
-
-                <td
-                  class="px-6 py-4 whitespace-no-wrap text-right border-b border-gray-200 text-sm leading-5 font-medium"
-                >
-                <router-link to="/cards" class="text-indigo-600 hover:text-indigo-900">
-                  Edit
-                </router-link>
-                  
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <requests-table :items="requests"></requests-table>
         </div>
       </div>
     </div>
@@ -220,7 +134,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
+import apiClient from '../services/apiClient';
+import RequestsTable from '../components/RequestsTable.vue';
 
 interface User {
   name: string;
@@ -232,6 +148,7 @@ interface User {
 }
 
 export default defineComponent({
+  components: { RequestsTable },
   setup() {
     const testUser: User = {
       name: "John Doe",
@@ -241,11 +158,30 @@ export default defineComponent({
       status: "Active",
       role: "Owner",
     };
+    
 
     const users = ref<User[]>([...Array(20).keys()].map(() => testUser));
+    let logNum = ref(0);
+    let logNumFailed = ref(0);
+    let logFailRate = ref('');
+    let requests = ref([]);
+
+    (async () => {
+      //console.log('awa', (await apiClient.get('/stats')).data.data)
+      let d = (await apiClient.get('/stats')).data.data
+      logNum.value = d.num
+      logNumFailed.value = d.failed
+      logFailRate.value = d.failRate ? (d.failRate * 100)+'%' : '0%';
+      requests.value = (await apiClient.get('/stats-items')).data.data
+    })()
+    
 
     return {
       users,
+      logNum,
+      logNumFailed,
+      logFailRate,
+      requests
     };
   },
 });

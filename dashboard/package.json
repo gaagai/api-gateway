@@ -2,7 +2,7 @@
   "name": "tailwind-dashboard",
   "version": "0.0.1",
   "scripts": {
-    "dev": "NODE_ENV=development vite",
+    "dev": "NODE_ENV=development vite --https --debug",
     "build": "cross-env NODE_ENV=production vite build"
   },
   "dependencies": {
@@ -12,12 +12,12 @@
     "tailwindcss": "^1.9.1",
     "vue": "next",
     "vue-router": "^4.0.0-beta.13",
-    "vue-toastification": "^2.0.0-beta.5"
+    "vue-toastification": "^2.0.0-beta.6"
   },
   "devDependencies": {
     "@tailwindcss/custom-forms": "^0.2.1",
     "@vue/compiler-sfc": "^3.0.0",
     "cross-env": "^7.0.2",
-    "vite": "^1.0.0-rc.4"
+    "vite": "^1.0.0-rc.6"
   }
 }

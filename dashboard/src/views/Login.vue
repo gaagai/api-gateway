@@ -81,7 +81,7 @@ export default defineComponent({
       (async () => {
         try {
           // @TODO: rewrite to promise api to avoid verbosity
-          let result = await apiClient.post('/auth', { username: email.value, password: password.value }, { withCredentials: true })
+          let result = await apiClient.post('/auth', { username: email.value, password: password.value })
           if (!result.data.success || typeof result.data.user.id == 'undefined') {
             throw 'Wrong response data!'
           }
@@ -97,7 +97,7 @@ export default defineComponent({
           } else if (e.response?.statusText) {
             errMsg = e.response?.statusText
           } else {
-            errMsg = e
+            errMsg = e.toString() || errMsg
           }
 
           toast.error(errMsg)
