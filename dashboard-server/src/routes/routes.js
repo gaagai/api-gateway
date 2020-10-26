@@ -1,5 +1,7 @@
 const auth = require('../middleware/auth');
 const passport = require('passport');
+const { failResponse } = require('../helpers');
+
 
 module.exports = app => {
   //const tutorials = require("../controllers/tutorial.controller.js");
@@ -19,10 +21,14 @@ module.exports = app => {
   router.post('/auth', function(req, res, next) {
     passport.authenticate('local', function(err, user, info) {
       if (err) { return next(err); }
-      if (!user) { return res.status(403).json({'error': 'Authenticaiton failed. Please check if your credentials are valid.'}); }
+      if (!user) { 
+        return res.status(403).json(failResponse('Authentication failed. Please check if your credentials are valid.', 403)) 
+      }
       req.logIn(user, function(err) {
         if (err) { return next(err); }
-        return res.status(200).json({'success': true, user});
+        return res.status(200).json({data: { 
+          type: 'users', id: user.id, attributes: user 
+        }});
       });
     })(req, res, next);
   });
@@ -34,7 +40,7 @@ module.exports = app => {
     });
 
     req.session.destroy(function (err) {
-      res.status(200).json({success: true});
+      res.status(200).send();
     });
     
   });

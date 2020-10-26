@@ -15,13 +15,12 @@ Date: Mon, 26 Oct 2020 12:41:37 GMT
 Connection: close
 
 {
-  "error": {
-    "expose": true,
-    "statusCode": 400,
-    "status": 400,
-    "body": "fwefew",
-    "type": "entity.parse.failed"
-  }
+  "errors": [
+    {
+      "status": 400,
+      "title": "Unexpected token f in JSON at position 0"
+    }
+  ]
 }
 
 
@@ -44,7 +43,12 @@ Date: Mon, 26 Oct 2020 12:41:04 GMT
 Connection: close
 
 {
-  "error": "Authenticaiton failed. Please check if your credentials are valid."
+  "errors": [
+    {
+      "status": 403,
+      "title": "Authentication failed. Please check if your credentials are valid."
+    }
+  ]
 }
 
 
@@ -88,10 +92,13 @@ Date: Mon, 26 Oct 2020 12:40:35 GMT
 Connection: close
 
 {
-  "success": true,
-  "user": {
-    "name": "admin",
-    "id": 1
+  "data": {
+    "type": "users",
+    "id": 1,
+    "attributes": {
+      "name": "admin",
+      "id": 1
+    }
   }
 }
 

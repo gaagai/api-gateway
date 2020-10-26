@@ -2,9 +2,10 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const fs = require('fs');
 const cors = require("cors");
+const { failResponse } = require("./helpers");
 
 const jsonErrorHandler = async (err, req, res, next) => {
-  res.status(500).send({ error: err });
+  res.status(err.status || 500).json(failResponse(err.message, err.status));
 }
 
 const https = require('https')

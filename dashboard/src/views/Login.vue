@@ -82,18 +82,18 @@ export default defineComponent({
         try {
           // @TODO: rewrite to promise api to avoid verbosity
           let result = await apiClient.post('/auth', { username: email.value, password: password.value })
-          if (!result.data.success || typeof result.data.user.id == 'undefined') {
+          if (!result.data.data || typeof result.data.data.id == 'undefined') {
             throw 'Wrong response data!'
           }
           
           toast.success("Logged in successfully!");
-          userStore.setUser({ id: result.data.user.id, name: result.data.user.name, avatar: 'https://some-img' });
+          userStore.setUser({ id: result.data.data.id, name: result.data.data.attributes.name, avatar: 'https://some-img' });
           router.push("/dashboard");
           
         } catch(e) {
           let errMsg = 'Unknown error'
-          if (e.response?.data?.error) {
-            errMsg = e.response?.data?.error
+          if (e.response?.data?.errors) {
+            errMsg = e.response?.data?.errors[0].title
           } else if (e.response?.statusText) {
             errMsg = e.response?.statusText
           } else {
